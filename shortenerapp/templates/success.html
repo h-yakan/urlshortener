@@ -1,0 +1,10 @@
+{% include 'base.html' %}
+{% block success %}
+<div class="row">
+    <div class="col-12">
+        Url Kısaltma Başarılı! URL'niz için tıklayın:
+        <div class="mb-2">
+            <a href="{{urls.outSlug}}" class="link">{{urls.outSlug}}</a>
+        </div>
+    </div>
+</div>{% endblock success %}

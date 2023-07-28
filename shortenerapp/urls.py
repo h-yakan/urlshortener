@@ -1,7 +1,5 @@
 
-from django.contrib import admin
-from django.shortcuts import render
-from django.urls import include, path
+from django.urls import path
 from . import views
 
 
@@ -9,5 +7,7 @@ from . import views
 
 
 urlpatterns = [
-    path('', views.index),
+    path('save',views.saveUrl,name='save'),
+    path('',views.index),
+    path('<accessed_url>',views.shortenedRedirect)
 ]
