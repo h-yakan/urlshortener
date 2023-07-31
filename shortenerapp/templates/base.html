@@ -9,9 +9,9 @@
 <body>
     <!--navbar-->
     {% include 'partials/_nav.html' %}
-    <div class="container mt-3"><!--yukarıdan 3 aşağı taşıyor mt-3-->
-        {% include 'partials/_form.html' %}
-    </div>
+    {% block index %}
+    {% endblock index %}
+    
     {% block success %}
     {% endblock %}
 

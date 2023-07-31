@@ -1,13 +1,11 @@
-<form action="{% url 'save' %}" method='POST'>
+<form action="{% url 'form' %}" method='POST'>
     {% csrf_token %}
     <div class="row"> 
         <div class="col-10">
-            <div class="mb-3">
+            {% comment %} {{<div class="mb-3">
                 <input class="form-control" type="URL" placeholder="Kısaltmak istediğiniz siteyi girin" name="inUrl">
-            </div>
-            <div class="mb-3">
-                <input class="form-control" type="text" placeholder="URL Kısaltmanızı girin" name="outSlug">
-            </div>
+            </div>}} {% endcomment %}
+            {{form}}
         </div>
         <div class="col-2">
             <button type="submit" class="btn btn-secondary">Kısalt</button>
