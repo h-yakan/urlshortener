@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block index %}
+    <div class="container mt-3"><!--yukarıdan 3 aşağı taşıyor mt-3-->
+        <form method='POST'>
+            {% csrf_token %}
+            <div class="row"> 
+                <div class="col-10">
+                    {% comment %} {{<div class="mb-3">
+                        <input class="form-control" type="URL" placeholder="Kısaltmak istediğiniz siteyi girin" name="inUrl">
+                    </div>}} {% endcomment %}
+                    {{form}}
+                </div>
+                <div class="col-2">
+                    <button type="submit" class="btn btn-secondary">Kaydet</button>
+                </div>
+            </div>
+        </form>
+    </div>
+{% endblock index %}
+
