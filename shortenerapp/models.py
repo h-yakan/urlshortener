@@ -1,14 +1,8 @@
 from django.utils import timezone
 from django.db import models
-
+from django.contrib.auth.models import User
 # Create your models here.
-class MyUsers(models.Model):
-    userName= models.TextField()
-    userEmail= models.EmailField()
 
-    def __str__(self):
-        return f"{self.userEmail}"
-    
 
 class Urls(models.Model):
     inUrl= models.URLField(blank=False)
@@ -17,5 +11,8 @@ class Urls(models.Model):
     isActive = models.BooleanField(default = 1)
     dateStarted = models.DateTimeField(default= timezone.now())
     isPublic = models.BooleanField(default= 1)
-    allowedUsers = models.ManyToManyField(MyUsers)
-
+    ownerUser = models.ForeignKey(User, on_delete=models.CASCADE,related_name='owner',null=True)
+    allowedUsers = models.ManyToManyField(User,related_name='allowed',)
+    
+    def __str__(self):
+        return f"{self.outSlug}"

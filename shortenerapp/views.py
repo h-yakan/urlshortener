@@ -1,6 +1,6 @@
 from django.http import HttpResponseBadRequest, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, redirect, render
-
+from django.contrib.auth.decorators import login_required
 from shortenerapp.forms import URLGiris, kisiSecim
 from .models import Urls
 from django.utils.crypto import get_random_string
@@ -39,6 +39,12 @@ def form(req):
     return render(req, 'index.html',
                 {'form':form})
 
+def index(req):#burada kullanıcı girişi yoksa sadece url kısaltma formu çıkar. Tıklamak için giriş yap veya kaydol demesi gerekir. Eğer giriş yaptıysa iki tablo olarak kendisine ait kısa urller ve karşılıkları, bir de erişim izni olan urller ve karşılıkları bulunur. Sahip olduklarında paginator gibi objeleri sınırlayan bir şey olmalı ve objelerde sil butonu olmalı...
+    if req.user.is_authenticated():
+        ownedUrls = Urls.objects.filter(ownerUser__id = req.user.pk)
+        return render(req,'index.html',{'ownedUrls':ownedUrls,})
+
+@login_required
 def erisimFormu(req,slug):
     url = get_object_or_404(Urls,outSlug = slug)
     if url.isPublic == 1:
@@ -51,8 +57,9 @@ def erisimFormu(req,slug):
         else:
             form = kisiSecim(instance = url)
             return render(req, "access.html",{'form':form})
-    
-    
+
+
+@login_required
 def shortenedRedirect(req,accessed_url):
     if Urls.objects.get(outSlug = accessed_url).isActive:
         return HttpResponseRedirect(Urls.objects.get(outSlug = accessed_url).inUrl)
