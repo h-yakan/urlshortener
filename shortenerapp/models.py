@@ -5,12 +5,12 @@ from django.contrib.auth.models import User
 
 
 class Urls(models.Model):
-    inUrl= models.URLField(blank=False)
+    inUrl= models.URLField(blank=False,verbose_name="Kısaltmak istediğiniz URL'yi girin")
     outSlug= models.SlugField(null=False,blank=False,unique=True)
-    timer = models.IntegerField(default=1)
+    timer = models.IntegerField(default=1,verbose_name="Kısa URL'niz kaç gün aktif olsun")
     isActive = models.BooleanField(default = 1)
     dateStarted = models.DateTimeField(default= timezone.now())
-    isPublic = models.BooleanField(default= 1)
+    isPublic = models.BooleanField(default= 1,verbose_name="URL'niz herkese açık olsun mu")
     ownerUser = models.ForeignKey(User, on_delete=models.CASCADE,related_name='owner',null=True)
     allowedUsers = models.ManyToManyField(User,related_name='allowed',)
     

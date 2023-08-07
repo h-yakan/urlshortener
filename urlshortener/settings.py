@@ -45,6 +45,8 @@ INSTALLED_APPS = [
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
+    'crispy_forms',
+    'crispy_bootstrap4',
 ]
 SITE_ID = 1
 # SOCIALACCOUNT_PROVIDERS = {
@@ -135,7 +137,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'tr'
 
 TIME_ZONE = 'UTC'
 
@@ -158,3 +160,20 @@ STATICFILES_DIRS=[
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+LOGIN_REDIRECT_URL = '/'
+
+LOGIN_URL = '/accounts/login'
+
+ACCOUNT_LOGOUT_REDIRECT_URL = '/accounts/login'
+
+CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap4"
+
+CRISPY_TEMPLATE_PACK = "bootstrap4"
+
+# ACCOUNT_FORMS= {'signup': 'shortenerapp.forms.MySignupForm'}
+
+ACCOUNT_EMAIL_VERIFICATION = 'none'
+
+ACCOUNT_CONFIRM_EMAIL_ON_GET = True
+
+ACCOUNT_EMAIL_CONFIRMATION_ANONYMOUS_REDIRECT_URL = LOGIN_URL

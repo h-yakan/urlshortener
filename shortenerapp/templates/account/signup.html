@@ -1,5 +1,6 @@
-{% extends 'account/layout.html' %}
+{% extends 'layout.html' %}
 {% load static %}
+{% load crispy_forms_tags %}
         {% block content %}
         <div class="account-pages mt-5 mb-5">
             <div class="container">
@@ -18,7 +19,7 @@
 
                                 <form id="signup_form" method="post" action="{% url 'account_signup' %}">
                                   {% csrf_token %}
-                                    <div class="form-group">
+                                    {% comment %} <div class="form-group">
                                         <label for="fullname">Full Name</label>
                                         <input class="form-control" type="text" name="username" placeholder="Username" autocomplete="username" minlength="1" maxlength="150" required id="id_username">
                                     </div>
@@ -39,7 +40,9 @@
                                             <input type="checkbox" class="custom-control-input" id="checkbox-signup">
                                             <label class="custom-control-label" for="checkbox-signup">I accept <a href="javascript: void(0);" class="text-dark">Terms and Conditions</a></label>
                                         </div>
-                                    </div>
+                                    </div> {% endcomment %}
+                                    {{ form|crispy }}
+
                                     <div class="form-group mb-0 text-center">
                                         <button class="btn btn-primary btn-block" type="submit"> Sign Up </button>
                                     </div>

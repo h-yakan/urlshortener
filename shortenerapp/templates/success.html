@@ -1,5 +1,5 @@
-{% include 'base.html' %}
-{% block success %}
+{% include 'layout.html' %}
+{% block content %}
 <div class="row">
     <div class="col-12">
         Url Kısaltma Başarılı! URL'niz için tıklayın:
@@ -7,4 +7,4 @@
             <a href="{{index}}/{{slug}}" class="link">{{host}}/{{slug}}</a>
         </div>
     </div>
-</div>{% endblock success %}
+</div>{% endblock content %}

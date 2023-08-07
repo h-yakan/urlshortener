@@ -11,6 +11,7 @@ def success(req,slug):
 
     return render(req, 'success.html', {'slug':slug,'host':req.META['HTTP_HOST']}
                   )
+
 def form(req):
     def generateSlug():
         slug= get_random_string(8)
@@ -30,19 +31,32 @@ def form(req):
         slug = generateSlug()
         form = URLGiris(req.POST)
         if form.is_valid():
-            url = Urls(inUrl = form.cleaned_data['inUrl'],outSlug = slug,timer = form.cleaned_data['timer'],isPublic = form.cleaned_data['isPublic'])
+            url = Urls(inUrl = form.cleaned_data['inUrl'],outSlug = slug,timer = form.cleaned_data['timer'],isPublic = form.cleaned_data['isPublic'],ownerUser = req.user)
             url.save()
             html = '/access/'+slug
-            return redirect(html)
+            return redirect(html)   
     else:
         form = URLGiris()
+        if req.user.is_authenticated:
+            ownedUrls = Urls.objects.filter(ownerUser__id = req.user.pk)
+            return render(req, 'index.html',
+                {'form':form,'ownedUrls':ownedUrls,'host':req.META['HTTP_HOST']})
     return render(req, 'index.html',
                 {'form':form})
 
-def index(req):#burada kullanıcı girişi yoksa sadece url kısaltma formu çıkar. Tıklamak için giriş yap veya kaydol demesi gerekir. Eğer giriş yaptıysa iki tablo olarak kendisine ait kısa urller ve karşılıkları, bir de erişim izni olan urller ve karşılıkları bulunur. Sahip olduklarında paginator gibi objeleri sınırlayan bir şey olmalı ve objelerde sil butonu olmalı...
+def index(req):
+    print("abc",)
     if req.user.is_authenticated():
         ownedUrls = Urls.objects.filter(ownerUser__id = req.user.pk)
-        return render(req,'index.html',{'ownedUrls':ownedUrls,})
+        print("asd",ownedUrls)
+        return render(req,'index.html',{'ownedUrls':ownedUrls})
+    else:
+        pass
+
+def deleteUrl(req,slug):
+    url = Urls.objects.get(outSlug=slug)
+    url.delete()
+    return redirect('#')
 
 @login_required
 def erisimFormu(req,slug):

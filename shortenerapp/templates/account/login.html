@@ -1,4 +1,4 @@
-{% extends 'account/layout.html' %}
+{% extends 'layout.html' %}
 {% load static %}
         
         {% block content %}
@@ -14,30 +14,30 @@
                                   <a href="index.html">
                                       <span><img src={% static "assets/images/logo-dark.png" %} alt="" height="22"></span>
                                   </a>
-                                  <p class="text-muted mb-4 mt-3">Enter your email address and password to access admin panel.</p>
+                                  <p class="text-muted mb-4 mt-3">Giriş yapmak için kullanıcı adı ve şifrenizi girin.</p>
                               </div>
 
-                              <form action="{% url 'index' %}" method="POST">
+                              <form action="{% url 'account_login' %}" method="POST">
                                 {% csrf_token %}
                                   <div class="form-group mb-3">
-                                      <label for="emailaddress">Email address</label>
-                                      <input class="form-control" type="text" name="login" placeholder="Username" autocomplete="username" maxlength="150" required id="id_login">
+                                      <label for="emailaddress">Kullanıcı adı/Eposta</label>
+                                      <input class="form-control" type="text" name="login" placeholder="Kullanıcı adı" autocomplete="username" maxlength="150" required id="id_login">
                                   </div>
 
                                   <div class="form-group mb-3">
-                                      <label for="password">Password</label>
-                                      <input class="form-control" type="password" name="password" placeholder="Password" autocomplete="current-password" required id="id_password">
+                                      <label for="password">Şifre</label>
+                                      <input class="form-control" type="password" name="password" placeholder="Şifre" autocomplete="current-password" required id="id_password">
                                   </div>
 
-                                  <div class="form-group mb-3">
+                                  {% comment %} <div class="form-group mb-3">
                                       <div class="custom-control custom-checkbox">
                                           <input type="checkbox" name="remember" id="id_remember">
                                           <label class="custom-control-label" for="checkbox-signin">Remember me</label>
                                       </div>
-                                  </div>
+                                  </div> {% endcomment %}
 
                                   <div class="form-group mb-0 text-center">
-                                      <button class="btn btn-primary btn-block" type="submit" > Sign In </button>
+                                      <button class="btn btn-primary btn-block" type="submit" > Giriş yap </button>
                                   </div>
                               </form>
                               <div class="text-center">
@@ -64,8 +64,8 @@
 
                       <div class="row mt-3">
                           <div class="col-12 text-center">
-                              <p> <a href="password_reset.html" class="text-muted ml-1">Forgot your password?</a></p>
-                              <p class="text-muted">Don't have an account? <a href="{{ signup_url }}" class="text-white font-weight-medium ml-1">Sign Up</a></p>
+                              <p> <a href="password_reset.html" class="text-muted ml-1">Şifrenizi mi unuttunuz?</a></p>
+                              <p class="text-muted">Kaydolmadınız mı? Kaydolun <a href="{{ signup_url }}" class="text-white font-weight-medium ml-1">Kaydol</a></p>
                           </div> <!-- end col -->
                       </div>
                       <!-- end row -->

@@ -1,8 +1,49 @@
-{% extends 'base.html' %}
+{% extends 'layout.html' %}
 
-{% block index %}
-    <div class="container mt-3"><!--yukarıdan 3 aşağı taşıyor mt-3-->
-        {% include 'partials/_form.html' %}
-    </div>
-{% endblock index %}
+{% block content %}
+
+    <div class="container-fluid">
+        <!-- start page title -->
+        <div class="row">      
+            <div class="col-12">
+                <div class="card-box">
+                    {% include 'partials/_form.html' %}
+                </div>
+            </div>
+        </div>     
+        <!-- end page title --> 
+    </div> <!-- end container -->
+    {% if user.is_authenticated %}
+        <table class="table table-sm table-border">
+            <thead>
+                <tr>
+                    <th>Kısa Url</th>
+                    <th>Asıl Url</th>
+                    <th>Süre</th>
+                    <th>Herkese Açık</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for url in ownedUrls %}
+                    <tr>
+                        <td>
+                            <a href="{{url.outSlug}}">{{host}}/{{url.outSlug}}</a> 
+                        </td>
+                        <td>
+                            <a href="{{url.inUrl}}">{{url.inUrl}}</a>
+                        </td>
+                        <td>
+                            {{url.timer}} Gün
+                        </td>
+                        <td>
+                            {% if url.isPublic %}Evet
+                            {% else %}Hayır
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+{% endblock content %}
 
