@@ -7,12 +7,12 @@ from . import views
 
 
 urlpatterns = [
-    # path('save',views.saveUrl,name='save'),
     path('form',views.form,name='form'),
+    path('addUsers/',views.addUsers,name='addUsers'),
     path('access/<slug>',views.erisimFormu,name='erisimFormu'),
     path('success',views.success,name='success'),
-    # path('urlList',views.urlList),
+    path('htmx/create-user-form/',views.createUserForm,name='create-user-form'),
     path('',views.form,name='index'),
     path('<accessed_url>',views.shortenedRedirect),
-    path('deleteUrl/<slug>',views.deleteUrl,name='deleteUrl')
+    path('deleteUrl/<slug>',views.deleteUrl,name='deleteUrl'),
 ]

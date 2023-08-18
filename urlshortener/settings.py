@@ -12,6 +12,9 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 
 import os
 from pathlib import Path
+from celery.schedules import crontab
+from datetime import datetime
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -47,6 +50,8 @@ INSTALLED_APPS = [
     'allauth.socialaccount',
     'crispy_forms',
     'crispy_bootstrap4',
+    'django_celery_beat',
+    'celery'
 ]
 SITE_ID = 1
 # SOCIALACCOUNT_PROVIDERS = {
@@ -157,7 +162,6 @@ STATICFILES_DIRS=[
 ]
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
-
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 LOGIN_REDIRECT_URL = '/'
@@ -172,8 +176,45 @@ CRISPY_TEMPLATE_PACK = "bootstrap4"
 
 # ACCOUNT_FORMS= {'signup': 'shortenerapp.forms.MySignupForm'}
 
-ACCOUNT_EMAIL_VERIFICATION = 'none'
+ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
 
 ACCOUNT_CONFIRM_EMAIL_ON_GET = True
 
 ACCOUNT_EMAIL_CONFIRMATION_ANONYMOUS_REDIRECT_URL = LOGIN_URL
+
+CELERY_BROKER_URL = os.environ.get("CELERY_BROKER",'redis://localhost:6379/0')
+
+CELERY_RESULT_BACKEND = os.environ.get("CELERY_BROKER",'redis://localhost:6379/0')
+
+CELERY_TIMEZONE = 'UTC'
+
+CELERY_BEAT_SCHEDULE = { # scheduler configuration 
+    'countdown_schedule' : {  # whatever the name you want 
+        'task': 'urlshortener.tasks.countdown', # name of task with path
+        'schedule': crontab(), # crontab() runs the tasks every minute
+    }
+    }
+
+ACCOUNT_EMAIL_REQUIRED = True 
+ACCOUNT_UNIQUE_EMAIL = True
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend' 
+EMAIL_HOST = 'smtp.gmail.com' 
+EMAIL_PORT = 587 
+EMAIL_HOST_USER = 'huseyin.yakan.sd@gmail.com'  #new
+EMAIL_HOST_PASSWORD = "obhfymxexdlfidld" #new
+EMAIL_USE_TLS = True #new   
+
+ACCOUNT_USERNAME_REQUIRED = False
+
+ACCOUNT_FORMS = {
+    'add_email': 'allauth.account.forms.AddEmailForm',
+    'change_password': 'allauth.account.forms.ChangePasswordForm',
+    'disconnect': 'allauth.socialaccount.forms.DisconnectForm',
+    'login': 'allauth.account.forms.LoginForm',
+    'reset_password': 'allauth.account.forms.ResetPasswordForm',
+    'reset_password_from_key': 'allauth.account.forms.ResetPasswordKeyForm',
+    'set_password': 'allauth.account.forms.SetPasswordForm',
+    'signup': 'allauth.account.forms.SignupForm',
+    'user_token': 'allauth.account.forms.UserTokenForm',
+}

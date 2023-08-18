@@ -1,10 +1,10 @@
 from django import forms
 
 from shortenerapp.models import Urls
-from allauth.account.forms import SignupForm
+from allauth.account.forms import SignupForm, AddEmailForm
 from crispy_forms.layout import Layout, Field, Submit
 from crispy_forms.helper import FormHelper
-
+from django.contrib.auth.models import User,Group
 class URLGiris(forms.ModelForm):
     class Meta:
         model = Urls
@@ -30,13 +30,44 @@ class kisiSecim(forms.ModelForm):
 
 # class MySignupForm(SignupForm):
 #     def __init__(self, *args, **kwargs):
-#         super(MySignupForm, self).__init__(*args, **kwargs)
-#         self.fields['first_name'] = forms.CharField(required=False)
-#         self.fields['last_name'] = forms.CharField(required=False)
+#          super(MySignupForm, self).__init__(*args, **kwargs)
         
 #     def save(self, request):
         
-#         user = super(MySignupForm, self).save(request)
-#         user.first_name = self.cleaned_data.pop('first_name')
-#         user.last_name = self.cleaned_data.pop('last_name')
-#         return user
+#          user = super(MySignupForm, self).save(request)
+#          return user
+    
+# class MyEmailForm(AddEmailForm):
+#     def __init__(self, *args, **kwargs):
+#         super(MyEmailForm, self).__init__(*args, **kwargs)
+#     first_name = forms.CharField(required=True)
+#     last_name = forms.CharField(required=True)
+#     user_group = forms.ModelChoiceField(queryset=Group.objects.all(),
+#                                         widget=forms.RadioSelect,
+#                                         initial=('particulier')
+#                                         )
+    
+class MySignupForm(SignupForm):
+    def __init__(self, *args, **kwargs):
+        super(MySignupForm, self).__init__(*args, **kwargs)
+        self.fields["password1"].widget.attrs={"class":"d-none"}
+        self.fields["password2"].widget.attrs={"class":"d-none"}
+        self.fields["password1"].label=""
+        self.fields["password2"].label=""
+        self.fields["password1"].required=False
+        self.fields["password2"].required=False
+        self.fields["first_name"].label = "Adı"
+        self.fields["last_name"].label = "Soyadı"
+
+    first_name = forms.CharField(required=True)
+    last_name = forms.CharField(required=True)
+    # _groups = forms.ModelChoiceField(queryset=Group.objects.all())
+    groups = forms.ModelMultipleChoiceField(
+        queryset=Group.objects.all(),
+        widget=forms.CheckboxSelectMultiple,
+    )
+
+    def save(self, request):
+        
+         user = super(MySignupForm, self).save(request)
+         return user

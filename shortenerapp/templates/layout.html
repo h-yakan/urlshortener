@@ -15,6 +15,9 @@
     <link href={% static "assets/css/bootstrap.min.css" %} rel="stylesheet" type="text/css" />
     <link href={% static "assets/css/icons.min.css" %} rel="stylesheet" type="text/css" />
     <link href={% static "assets/css/app.min.css" %} rel="stylesheet" type="text/css" />
+    <script src="https://unpkg.com/htmx.org@1.5.0"
+        integrity="sha384-oGA+prIp5Vchu6we2YkI51UtVzN9Jpx2Z7PnR1I78PnZlN8LkrCT4lqqqmDkyrvI"
+        crossorigin="anonymous"></script>
     {% block head %}
     {% endblock head %}
     </head>
@@ -54,5 +57,10 @@
         {% block appjs %}{% endblock appjs %}
         <script src={% static "assets/js/app.min.js" %}
         ></script>
+        <script>
+            document.body.addEventListener('htmx:configRequest', (event) => {
+            event.detail.headers['X-CSRFToken'] = '{{ csrf_token }}';
+            })
+        </script>
     </body>
 </html>
