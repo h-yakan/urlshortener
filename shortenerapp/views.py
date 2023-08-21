@@ -6,6 +6,9 @@ from .models import Urls
 from django.utils.crypto import get_random_string
 from allauth.account.adapter import DefaultAccountAdapter
 from allauth.account.models import EmailAddress
+from allauth.account.forms import ResetPasswordForm
+from django.conf import settings
+from django.http import HttpRequest
 from django.contrib.auth.models import User
 # Create your views here.
 
@@ -85,11 +88,24 @@ def shortenedRedirect(req,accessed_url):
 def isAdmin(user):
     return user.is_superuser
 
+def send_password_reset(user: settings.AUTH_USER_MODEL):
+    request = HttpRequest()
+    request.user = user
+    request.META['HTTP_HOST'] = '127.0.0.1:8000'
+    form = ResetPasswordForm({"email": user.email})
+    if form.is_valid():
+        form.save(request)
+
 @user_passes_test(isAdmin)
 def addUsers(request):    
+
     if request.method == "POST":
         form = MySignupForm(request.POST)
         if form.is_valid():
+            if User.objects.filter(email = form.cleaned_data["email"]).count != 0:
+                form = MySignupForm()
+                form.add_error('email','Girdiğiniz eposta zaten kullanılıyor')
+                return render(request,'partials/_userForm.html',{'form':form})
             # try: 
             #     User.objects.get(email = form.cleaned_data["email"])
             #     form.errorMessage("")
@@ -103,7 +119,7 @@ def addUsers(request):
             user =accAda.new_user(request)
             accAda.populate_username(request,user)
             accAda.save_user(request,user,form)
-            try: 
+            try:
                 mail =EmailAddress.objects.get(email= user.email)
                 mail.verified = 1
                 mail.primary = 1
@@ -114,11 +130,15 @@ def addUsers(request):
             selected_groups = form.cleaned_data["groups"]
             for group in selected_groups:
                 user.groups.add(group)
+                
+            send_password_reset(user)
             return HttpResponse('Kayıt Başarılı')
         else:
+
             return render(request,'partials/_userForm.html',{'form':form})
     else:
         form = MySignupForm()
+
         return render(request,'addUsers.html',{'form':form})
         
 def createUserForm(req):
