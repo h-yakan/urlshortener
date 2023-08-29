@@ -1,5 +1,12 @@
 {% extends 'layout.html' %}
+{% load static %}
+{% block libcss %}
+    <link href="{% static 'assets/libs/datatables/dataTables.bootstrap4.css' %}" rel="stylesheet" type="text/css" />
+    <link href="{% static 'assets/libs/datatables/responsive.bootstrap4.css' %}" rel="stylesheet" type="text/css" />
+    <link href="{% static 'assets/libs/datatables/buttons.bootstrap4.css' %}" rel="stylesheet" type="text/css" />
+    <link href="{% static 'assets/libs/datatables/select.bootstrap4.css' %}" rel="stylesheet" type="text/css" />
 
+{% endblock libcss %}
 {% block content %}
 
     <div class="container-fluid">
@@ -14,7 +21,7 @@
         <!-- end page title --> 
     </div> <!-- end container -->
     {% if user.is_authenticated %}
-        <table class="table table-sm table-border">
+        <table class="table table-sm table-border" id="basic-datatable">
             <thead>
                 <tr>
                     <th>Kısa Url</th>
@@ -40,6 +47,7 @@
                             {% else %}Hayır
                             {% endif %}
                         </td>
+                        
                     </tr>
                 {% endfor %}
             </tbody>
@@ -47,3 +55,17 @@
     {% endif %}
 {% endblock content %}
 
+{% block libjs %}
+<script src="{% static 'assets/libs/datatables/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'assets/libs/datatables/dataTables.bootstrap4.js' %}"></script>
+<script src="{% static 'assets/libs/datatables/dataTables.responsive.min.js' %}"></script>
+<script src="{% static 'assets/libs/datatables/responsive.bootstrap4.min.js' %}"></script>
+<script src="{% static 'assets/libs/datatables/dataTables.buttons.min.js' %}"></script>
+<script src="{% static 'assets/libs/datatables/buttons.bootstrap4.min.js' %}"></script>
+<script src="{% static 'assets/libs/datatables/buttons.html5.min.js' %}"></script>
+<script src="{% static 'assets/libs/datatables/buttons.flash.min.js' %}"></script>
+<script src="{% static 'assets/libs/datatables/dataTables.keyTable.min.js' %}"></script>
+<script src="{% static 'assets/libs/datatables/dataTables.select.min.js' %}"></script>
+<script src="{% static 'assets/js/pages/datatables.init.js' %}"></script>
+
+{% endblock libjs %}

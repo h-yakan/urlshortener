@@ -10,6 +10,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <!-- App favicon -->
     <link rel="shortcut icon" href={% static "assets/images/favicon.ico" %}>
+    {% block libcss %}{% endblock libcss %}
 
     <!-- App css -->
     <link href={% static "assets/css/bootstrap.min.css" %} rel="stylesheet" type="text/css" />
@@ -52,11 +53,12 @@
         {% block vendorjs %}
         {% endblock vendorjs %}
         <script src={% static "assets/js/vendor.min.js"%}></script>
-    
+        {% block libjs %}{% endblock libjs %}
         <!-- App js -->
         {% block appjs %}{% endblock appjs %}
         <script src={% static "assets/js/app.min.js" %}
         ></script>
+        
         <script>
             document.body.addEventListener('htmx:configRequest', (event) => {
             event.detail.headers['X-CSRFToken'] = '{{ csrf_token }}';

@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'django.contrib.sites',#allauth için gerekli
     #Benim uygulamalarım
     'shortenerapp',
+    'productformsetapp',
     #3.Parti Uygulamalar
     'allauth',
     'allauth.account',

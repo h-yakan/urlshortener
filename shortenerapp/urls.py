@@ -8,7 +8,9 @@ from . import views
 
 urlpatterns = [
     path('form',views.form,name='form'),
-    path('addUsers/',views.addUsers,name='addUsers'),
+    path('userList/',views.userList,name='userList'),
+    path('addUsers/',views.addUsers,name='addUser'),
+    path('signupTable/',views.addUsersFormSet,name='addUsers'),
     path('access/<slug>',views.erisimFormu,name='erisimFormu'),
     path('success',views.success,name='success'),
     path('htmx/create-user-form/',views.createUserForm,name='create-user-form'),

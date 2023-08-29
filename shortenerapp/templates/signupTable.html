@@ -1,0 +1,133 @@
+{% extends 'layout.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block libcss %}
+<link href="{% static 'assets/libs/bootstrap-tagsinput/bootstrap-tagsinput.css' %}" rel="stylesheet" />
+<link href="{% static 'assets/libs/switchery/switchery.min.css' %}" rel="stylesheet" type="text/css" />
+<link href="{% static 'assets/libs/multiselect/multi-select.css' %}" rel="stylesheet" type="text/css" />
+<link href="{% static 'assets/libs/select2/select2.min.css' %}" rel="stylesheet" type="text/css" />
+<link href="{% static 'assets/libs/bootstrap-select/bootstrap-select.min.css' %}" rel="stylesheet" type="text/css" />
+<link href="{% static 'assets/libs/bootstrap-touchspin/jquery.bootstrap-touchspin.min.css' %}" rel="stylesheet" />
+{% endblock libcss %}
+{% block content %}
+<form enctype="multipart/form-data" class="container" method="post" id="product_form">
+    {% csrf_token %}
+    {{ formset.management_form }}
+    <script type="text/html" id="variants-template">  // id="inlineformsetname-template"
+            // id='inlineformsetname-__prefix__' 
+            <tr id="variants-__prefix__" class= hide_all>
+                {% for fields in formset.empty_form.hidden_fields %}
+                    {{ fields }}
+                {% endfor %}
+            
+                {% for fields in formset.empty_form.visible_fields %}
+                    <td>{{fields}}</td>
+                {% endfor %}
+            </tr>
+    </script>
+    <div class="table-responsive card mt-4">
+        <div class="card-header card-header-secondary">
+            <h4 class="card-title">{{message}}</h4>
+            <h4 class="card-title">Kullanıcı ekle</h4>
+        </div>
+        
+        <table class="table card-header">
+            <thead class="text-secondary">
+                <th>Eposta <span style="color: red;" class="required">*</span></th>
+                <th>İsim <span style="color: red;" class="required">*</span></th>
+                <th>Soyisim <span style="color: red;" class="required">*</span></th>
+                <th>Gruplar</th>
+            </thead>
+            <tbody id="item-variants">  <!-- id="item-inlineformsetname" -->
+                    <!-- formset non forms errors -->
+                {% for error in formset.non_form_errors %}
+                    <span style="color: red">{{ error }}</span>
+                {% endfor %}
+                {% for formss in formset %}
+                    {{ formss.management_form }}
+                    <tr id="variants-{{ forloop.counter0 }}" class= hide_all>  <!-- id="inlineformsetname-counter" -->
+                        {{ formss.id }}
+                        {% for field in formss.visible_fields %}
+                            <td>
+                                {{field}}
+                                {% for error in field.errors %}
+                                    <span style="color: red">{{ error }}</span>
+                                {% endfor %}                                
+                                        {% comment %} {{ field.DELETE }} {% endcomment %}
+                                </td>
+                        {% endfor %}
+                            {% comment %} for delete {% endcomment %}
+                            {% if formss.instance.pk %}
+                                <td>
+                                    <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#exampleModal{{formss.instance.pk}}">
+                                        Delete
+                                    </button>
+                                    <!-- Modal -->
+                                    <div class="modal fade" id="exampleModal{{formss.instance.pk}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel{{formss.instance.pk}}" aria-hidden="true">
+                                        <div class="modal-dialog" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                            <h5 class="modal-title" id="exampleModalLabel{{formss.instance.pk}}">Are Your Sure You Want To Delete This?</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <a href="{% url 'products:delete_variant' formss.instance.pk %}" type="button" class="btn btn-primary">Yes, Delete</a>
+                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                            </div>
+                                        </div>
+                                        </div>
+                                    </div>
+                                </td>            
+                             {% endif %} 
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <a href="#" id="add-variant-button" class="btn btn-secondary add-variants">Kişi ekle</a> <!-- id="add-inlineformsetname-button" -->
+        <div class="form-group mt-1">
+            <button type="submit" class="btn btn-primary btn-block">Kaydet</button>
+        </div>
+    </div>
+</form>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+{% endblock content %}
+
+{% block libjs %}
+<script src="{% static 'assets/libs/bootstrap-tagsinput/bootstrap-tagsinput.min.js' %}"></script>
+<script src="{% static 'assets/libs/switchery/switchery.min.js' %}"></script>
+<script src="{% static 'assets/libs/multiselect/jquery.multi-select.js' %}"></script>
+<script src="{% static 'assets/libs/jquery-quicksearch/jquery.quicksearch.min.js' %}"></script>
+<script src="{% static 'assets/libs/select2/select2.min.js' %}"></script>
+<script src="{% static 'assets/libs/bootstrap-select/bootstrap-select.min.js' %}"></script>
+<script src="{% static 'assets/libs/bootstrap-touchspin/jquery.bootstrap-touchspin.min.js' %}"></script>
+<script src="{% static 'assets/libs/jquery-mask-plugin/jquery.mask.min.js' %}"></script>
+<script src="{% static 'assets/js/pages/form-advanced.init.js' %}"></script>
+{% endblock libjs %}
+
+{% block appjs %}
+    
+    <script>
+        $(document).ready(function() {
+            // when user clicks add more btn of variants
+            $('.add-variants').click(function(ev) {
+                
+                ev.preventDefault();
+                var count = $('#item-variants').children().length;
+                var tmplMarkup = $('#variants-template').html();
+                var compiledTmpl = tmplMarkup.replace(/__prefix__/g, count);
+                $('#item-variants').append(compiledTmpl);
+            
+                    // update form count
+                $('#id_form-TOTAL_FORMS').attr('value', count+1);
+                $('.select2').select2();
+            });    
+        });
+    </script>
+{% endblock appjs %}
+    {% comment %} script ve add-variant-button galiba class ile bağlı. Benim istediğim ekleme butonu bu olabilir. {% endcomment %}
