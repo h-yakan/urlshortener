@@ -1,8 +1,71 @@
-{% extends 'base.html' %}
+{% extends 'layout.html' %}
+{% load static %}
+{% block libcss %}
+    <link href="{% static 'assets/libs/datatables/dataTables.bootstrap4.css' %}" rel="stylesheet" type="text/css" />
+    <link href="{% static 'assets/libs/datatables/responsive.bootstrap4.css' %}" rel="stylesheet" type="text/css" />
+    <link href="{% static 'assets/libs/datatables/buttons.bootstrap4.css' %}" rel="stylesheet" type="text/css" />
+    <link href="{% static 'assets/libs/datatables/select.bootstrap4.css' %}" rel="stylesheet" type="text/css" />
 
-{% block index %}
-    <div class="container mt-3"><!--yukarıdan 3 aşağı taşıyor mt-3-->
-        {% include 'partials/_form.html' %}
-    </div>
-{% endblock index %}
+{% endblock libcss %}
+{% block content %}
 
+    <div class="container-fluid">
+        <!-- start page title -->
+        <div class="row">      
+            <div class="col-12">
+                <div class="card-box">
+                    {% include 'partials/_form.html' %}
+                </div>
+            </div>
+        </div>     
+        <!-- end page title --> 
+    </div> <!-- end container -->
+    {% if user.is_authenticated %}
+        <table class="table table-sm table-border" id="basic-datatable">
+            <thead>
+                <tr>
+                    <th>Kısa Url</th>
+                    <th>Asıl Url</th>
+                    <th>Süre</th>
+                    <th>Herkese Açık</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for url in ownedUrls %}
+                    <tr>
+                        <td>
+                            <a href="{{url.outSlug}}">{{host}}/{{url.outSlug}}</a> 
+                        </td>
+                        <td>
+                            <a href="{{url.inUrl}}">{{url.inUrl}}</a>
+                        </td>
+                        <td>
+                            {{url.timer}} Gün
+                        </td>
+                        <td>
+                            {% if url.isPublic %}Evet
+                            {% else %}Hayır
+                            {% endif %}
+                        </td>
+                        
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+{% endblock content %}
+
+{% block libjs %}
+<script src="{% static 'assets/libs/datatables/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'assets/libs/datatables/dataTables.bootstrap4.js' %}"></script>
+<script src="{% static 'assets/libs/datatables/dataTables.responsive.min.js' %}"></script>
+<script src="{% static 'assets/libs/datatables/responsive.bootstrap4.min.js' %}"></script>
+<script src="{% static 'assets/libs/datatables/dataTables.buttons.min.js' %}"></script>
+<script src="{% static 'assets/libs/datatables/buttons.bootstrap4.min.js' %}"></script>
+<script src="{% static 'assets/libs/datatables/buttons.html5.min.js' %}"></script>
+<script src="{% static 'assets/libs/datatables/buttons.flash.min.js' %}"></script>
+<script src="{% static 'assets/libs/datatables/dataTables.keyTable.min.js' %}"></script>
+<script src="{% static 'assets/libs/datatables/dataTables.select.min.js' %}"></script>
+<script src="{% static 'assets/js/pages/datatables.init.js' %}"></script>
+
+{% endblock libjs %}

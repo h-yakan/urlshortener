@@ -1,14 +1,26 @@
 <form action="{% url 'form' %}" method='POST'>
     {% csrf_token %}
     <div class="row"> 
-        <div class="col-10">
-            {% comment %} {{<div class="mb-3">
-                <input class="form-control" type="URL" placeholder="Kısaltmak istediğiniz siteyi girin" name="inUrl">
-            </div>}} {% endcomment %}
-            {{form}}
-        </div>
-        <div class="col-2">
-            <button type="submit" class="btn btn-secondary">Kısalt</button>
+        <div class="col-12">
+            <div class="row">
+                <div class="col-6">
+                    <label for="">Kısaltmak istediğiniz URL'yi girin</label>
+                    {{form.inUrl}}
+                </div>
+                <div class="col-4">
+                    <label for="">
+                        Kısaltılmış URL'niz kaç günlük olsun
+                    </label>
+                    {{form.timer}}
+                </div>
+                <div class="col-2">
+                    <label for="id_isPublic">
+                        Bu URL Herkese açık yapılsın mı? Cevabınız
+                    </label>
+                    {{form.isPublic}}
+                </div>
+            </div>
+            <button class="btn btn-dark waves-effect waves-light" type="submit">Kısalt</button>
         </div>
     </div>
 </form>

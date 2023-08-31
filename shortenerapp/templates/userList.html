@@ -1,0 +1,110 @@
+{% extends 'layout.html' %}
+{% load crispy_forms_tags %}
+{% load static %}
+
+{% block libcss %}
+    <link href="{% static 'assets/libs/datatables/dataTables.bootstrap4.css' %}" rel="stylesheet" type="text/css" />
+    <link href="{% static 'assets/libs/datatables/responsive.bootstrap4.css' %}" rel="stylesheet" type="text/css" />
+    <link href="{% static 'assets/libs/datatables/buttons.bootstrap4.css' %}" rel="stylesheet" type="text/css" />
+    <link href="{% static 'assets/libs/datatables/select.bootstrap4.css' %}" rel="stylesheet" type="text/css" />
+
+{% endblock libcss %}
+
+{% block content %}
+<div class="container mt-3">
+    <div class="row">
+        <div class="col-12">
+            <div class="modal" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h1 class="modal-title fs-5" id="exampleModalLabel">Kişi Ekle</h1>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <form method="POST">
+                                {% csrf_token %}
+                                {{form|crispy}}
+                                <button type="submit" class="btn btn-primary">Kaydet</button>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">İptal</button>
+                            <a role="button" class="btn btn-primary" href="{% url 'addUsers' %}">Daha Fazla Kişi Ekle</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-header">
+                    <button class="btn btn-primary waves-effect waves-light" type="button" data-toggle="modal" data-target="#exampleModal">
+                        <span class="pro-user-name ml-1">
+                            Kişi Ekle 
+                        </span>
+                    </button>
+                </div>
+                <div class="card-body">
+                    <table id="basic-datatable" class="table table-sm table-border">
+                        <thead>
+                            <tr>
+                                <th>E posta</th>
+                                <th>Kullanıcı adı</th>
+                                <th>İsim</th>
+                                <th>Soyisim</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for user in users %}
+                                <tr>
+                                    <td>
+                                        {{user.email}}
+                                    </td>
+                                    <td>
+                                        {{user.username}}
+        
+                                    </td>
+                                    <td>
+                                        {{user.first_name}}
+                                    </td>
+                                    <td>
+                                        {{user.last_name}}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}
+
+{% block libjs %}
+<script src="{% static 'assets/libs/datatables/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'assets/libs/datatables/dataTables.bootstrap4.js' %}"></script>
+<script src="{% static 'assets/libs/datatables/dataTables.responsive.min.js' %}"></script>
+<script src="{% static 'assets/libs/datatables/responsive.bootstrap4.min.js' %}"></script>
+<script src="{% static 'assets/libs/datatables/dataTables.buttons.min.js' %}"></script>
+<script src="{% static 'assets/libs/datatables/buttons.bootstrap4.min.js' %}"></script>
+<script src="{% static 'assets/libs/datatables/buttons.html5.min.js' %}"></script>
+<script src="{% static 'assets/libs/datatables/buttons.flash.min.js' %}"></script>
+<script src="{% static 'assets/libs/datatables/dataTables.keyTable.min.js' %}"></script>
+<script src="{% static 'assets/libs/datatables/dataTables.select.min.js' %}"></script>
+<script src="{% static 'assets/js/pages/datatables.init.js' %}"></script>
+
+{% endblock libjs %}
+{% block appjs %}
+<script>
+    {% if form.errors %}
+    $(document).ready(function () {
+        
+            $('#exampleModal').modal('show');
+    });
+    {% endif %}
+</script>
+{% endblock appjs %}
+
