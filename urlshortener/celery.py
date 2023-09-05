@@ -21,12 +21,12 @@ app.autodiscover_tasks()
 #                broker='redis://localhost:6379/0',
 #                backend='redis://localhost:6379/0'
 #             )
-app.conf.beat_schedule = {
-    'countdown': {
-        'task': 'shortenerapp.tasks.countdown',
-        'schedule': crontab(minute=0,hour=0),
-    },
-}
+# app.conf.beat_schedule = {
+#     'countdown': {
+#         'task': 'shortenerapp.tasks.countdown',
+#         'schedule': crontab(),
+#     },
+# }
 
 
 @app.task(bind=True, ignore_result=True)

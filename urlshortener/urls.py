@@ -12,5 +12,4 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('shortenerapp.urls')),
     path('accounts/', include('allauth.urls')),
-    path('products/',include('productformsetapp.urls')),
 ]

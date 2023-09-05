@@ -12,8 +12,6 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 
 import os
 from pathlib import Path
-from celery.schedules import crontab
-from datetime import datetime
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -44,7 +42,6 @@ INSTALLED_APPS = [
     'django.contrib.sites',#allauth için gerekli
     #Benim uygulamalarım
     'shortenerapp',
-    'productformsetapp',
     #3.Parti Uygulamalar
     'allauth',
     'allauth.account',
@@ -52,6 +49,7 @@ INSTALLED_APPS = [
     'crispy_forms',
     'crispy_bootstrap4',
     'django_celery_beat',
+    'django_celery_results',
     'celery'
 ]
 SITE_ID = 1
@@ -175,26 +173,47 @@ CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap4"
 
 CRISPY_TEMPLATE_PACK = "bootstrap4"
 
-# ACCOUNT_FORMS= {'signup': 'shortenerapp.forms.MySignupForm'}
-
 ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
 
 ACCOUNT_CONFIRM_EMAIL_ON_GET = True
 
 ACCOUNT_EMAIL_CONFIRMATION_ANONYMOUS_REDIRECT_URL = LOGIN_URL
 
-CELERY_BROKER_URL = os.environ.get("CELERY_BROKER",'redis://localhost:6379/0')
+# CELERY_BROKER_URL = os.environ.get("CELERY_BROKER",'redis://localhost:6379/0')
 
-CELERY_RESULT_BACKEND = os.environ.get("CELERY_BROKER",'redis://localhost:6379/0')
+# CELERY_RESULT_BACKEND = os.environ.get("CELERY_BROKER",'redis://localhost:6379/0')
+
+
+CELERY_BROKER_URL = os.environ.get("CELERY_BROKER",'redis://127.0.0.1:6379/0')
+
+CELERY_RESULT_BACKEND = os.environ.get("CELERY_BROKER",'redis://127.0.0.1:6379/0')
+
+CELERY_ACCEPT_CONTENT = ['application/json']  
+
+CELERY_TASK_SERIALIZER = 'json'  
+
+CELERY_RESULT_SERIALIZER = 'json'
 
 CELERY_TIMEZONE = 'UTC'
 
-CELERY_BEAT_SCHEDULE = { # scheduler configuration 
-    'countdown_schedule' : {  # whatever the name you want 
-        'task': 'urlshortener.tasks.countdown', # name of task with path
-        'schedule': crontab(), # crontab() runs the tasks every minute
+CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'
+
+# CELERY_BEAT_SCHEDULE = { # scheduler configuration 
+#      'countdown_schedule' : {  # whatever the name you want 
+#          'task': 'urlshortener.tasks.countdown', # name of task with path
+#          'schedule': crontab(minute=1,hour=0), # crontab() runs the tasks every minute
+#      },
+# }
+
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": f"redis://127.0.0.1:6379/1",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        },
     }
-    }
+}
 
 ACCOUNT_EMAIL_REQUIRED = True 
 ACCOUNT_UNIQUE_EMAIL = True
