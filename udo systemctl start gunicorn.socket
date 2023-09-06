@@ -1,0 +1,5 @@
+[0;1;31mWarning:[0m The unit file, source configuration file or drop-ins of gunicorn.service changed on disk. Run 'systemctl daemon-reload' to reload units.
+○ gunicorn.service - gunicorn daemon
+     Loaded: loaded (/etc/systemd/system/gunicorn.service; disabled; vendor preset: enabled)
+     Active: inactive (dead)
+TriggeredBy: [0;1;32m●[0m gunicorn.socket
