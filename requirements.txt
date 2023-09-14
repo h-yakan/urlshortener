@@ -20,11 +20,13 @@ django-celery-beat==2.5.0
 django-crispy-forms==2.0
 django-huey==1.1.1
 django-timezone-field==5.1
+gunicorn==21.2.0
 idna==3.4
 kombu==5.3.1
 oauthlib==3.2.2
 packaging==23.1
 prompt-toolkit==3.0.39
+psycopg2-binary==2.9.6
 pycparser==2.21
 PyJWT==2.8.0
 python-crontab==3.0.0
