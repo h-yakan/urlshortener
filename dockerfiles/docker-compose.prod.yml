@@ -30,6 +30,64 @@ services:
       - static_volume:/home/app/web/staticfiles
     depends_on:
       - web
+  celery_worker:
+    command: celery -A urlshortener worker -l info
+    build:
+      context: .
+      dockerfile: Dockerfile.prod
+    image: django_celery_example_celery_worker
+    # command: /start-celeryworker
+    volumes:
+      - .:/home/app/web
+    environment:
+      - DB_HOST=db
+      - CELERY_BROKER=redis://redis:6379/0
+      - CELERY_BACKEND=redis://redis:6379/0
+    # env_file:
+    #   - ./.env/.dev-sample
+    depends_on:
+      - redis
+      - db
+
+  celery_beat:
+    command: celery -A urlshortener beat -l info --scheduler django_celery_beat.schedulers:DatabaseScheduler
+    build:
+      context: .
+      dockerfile: Dockerfile.prod
+    image: django_celery_example_celery_beat
+    # command: /start-celerybeat
+    volumes:
+      - .:/home/app/web
+    # env_file:
+    #   - ./.env/.dev-sample
+    environment:
+      - CELERY_BROKER=redis://redis:6379/0
+      - CELERY_BACKEND=redis://redis:6379/0
+      - DB_HOST=db
+    depends_on:
+      - redis
+      - db
+
+  flower:
+    command: celery -A urlshortener flower
+    build:
+      context: .
+      dockerfile: Dockerfile.prod
+    image: django_celery_example_celery_flower
+    # command: /start-flower
+    volumes:
+      - .:/home/app/web
+    # env_file:
+    #   - ./.env/.dev-sample
+    environment:
+      - CELERY_BROKER=redis://redis:6379/0
+      - CELERY_BACKEND=redis://redis:6379/0
+      - DB_HOST=db
+    ports:
+      - 5557:5555
+    depends_on:
+      - redis
+      - db
 
 volumes:
   postgres_data:

@@ -13,7 +13,6 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 import os
 from pathlib import Path
 from celery.schedules import crontab
-from datetime import datetime
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -27,12 +26,13 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-=$!+_km9d&-*j69-1otmx8%jpqva#pb2)n51v3&mfzys8fxo3c'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['localhost']
 
-
+CSRF_TRUSTED_ORIGINS = ['http://localhost','http://localhost:1337']
 # Application definition
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -119,13 +119,22 @@ AUTHENTICATION_BACKENDS = [#AllAuth
 #     }
 # }
 DATABASES = {
-    "default": {
-        "ENGINE": os.environ.get("SQL_ENGINE", "django.db.backends.sqlite3"),
-        "NAME": os.environ.get("SQL_DATABASE", BASE_DIR / "db.sqlite3"),
-        "USER": os.environ.get("SQL_USER", "user"),
-        "PASSWORD": os.environ.get("SQL_PASSWORD", "password"),
-        "HOST": os.environ.get("SQL_HOST", "localhost"),
-        "PORT": os.environ.get("SQL_PORT", "5432"),
+    # "default": {
+    #     "ENGINE": os.environ.get("SQL_ENGINE", "django.db.backends.sqlite3"),
+    #     "NAME": os.environ.get("SQL_DATABASE", BASE_DIR / "db.sqlite3"),
+    #     "USER": os.environ.get("SQL_USER", "user"),
+    #     "PASSWORD": os.environ.get("SQL_PASSWORD", "password"),
+    #     "HOST": os.environ.get("SQL_HOST", "localhost"),
+    #     "PORT": os.environ.get("SQL_PORT", "5432"),
+    # }
+ 
+   "default": {        
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": "hello_django_prod",
+        "USER": "hello_django",
+        "PASSWORD": "hello_django",
+        "HOST": "db",
+        "PORT": 5432,
     }
 }
 

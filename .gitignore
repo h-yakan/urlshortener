@@ -1,13 +1,3 @@
 /shortener-env
 /shortener-linenv
-/nginx/nginx.conf
-/entrypoint.sh
-/entrypoint.prod.sh
-/Dockerfile.prod
-/Dockerfile
-/docker-compose.yml
-/docker-compose.prod.yml
-/.env.prod.db
-/.env.prod
-/.env.dev
-/nginx
+/env

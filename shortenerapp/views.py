@@ -1,15 +1,15 @@
+from datetime import timedelta
 from random import randint
-from django import forms
 from django.forms import formset_factory
+from django.utils import timezone
 from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, redirect, render
 from django.contrib.auth.decorators import login_required, user_passes_test
 from shortenerapp.forms import MyResetPasswordForm, MySignupForm, URLGiris, kisiSecim
-from .models import Urls
+from .models import SendMail, Urls
 from django.utils.crypto import get_random_string
 from allauth.account.adapter import DefaultAccountAdapter
 from allauth.account.models import EmailAddress
-from allauth.account.forms import ResetPasswordForm
 from django.conf import settings
 from django.http import HttpRequest
 from django.contrib.auth.models import User
@@ -21,7 +21,7 @@ def success(req,slug):
     slug = slug
     return render(req, 'success.html', {'slug':slug,'host':req.META['HTTP_HOST']}
                   )
-        
+
 def form(req):
     def generateSlug():
         slug= get_random_string(8)
@@ -43,6 +43,10 @@ def form(req):
         if form.is_valid():
             url = Urls(inUrl = form.cleaned_data['inUrl'],outSlug = slug,timer = form.cleaned_data['timer'],isPublic = form.cleaned_data['isPublic'],ownerUser = req.user)
             url.save()
+            mailDate = url.expirationDate + timedelta(days = -1, minutes = 1)   
+            mailToSend = SendMail(mail = req.user.email, mailtext = "Url'inizin süresi 1 gün sonra dolacak.", sendingDate = mailDate)
+            mailToSend.save()
+            # mailToSend.setup_task()
             html = '/access/'+slug
             return redirect(html)   
     else:
@@ -130,10 +134,20 @@ def userList(req):
 def shortenedRedirect(req,accessed_url):
     if Urls.objects.get(outSlug = accessed_url).isActive :
         if Urls.objects.get(outSlug = accessed_url).isPublic:
-            return HttpResponseRedirect(Urls.objects.get(outSlug = accessed_url).inUrl)
+            if Urls.objects.get(outSlug = accessed_url).expirationDate < timezone.now():
+                url = Urls.objects.get(outSlug = accessed_url).isActive = False
+                url.save()
+                return HttpResponseBadRequest()
+            else:
+                return HttpResponseRedirect(Urls.objects.get(outSlug = accessed_url).inUrl)
         else:
             if Urls.objects.get(outSlug = accessed_url).allowedUsers.contains(req.user):
-                return HttpResponseRedirect(Urls.objects.get(outSlug = accessed_url).inUrl)
+                if Urls.objects.get(outSlug = accessed_url).expirationDate < timezone.now():
+                    url = Urls.objects.get(outSlug = accessed_url).isActive = False
+                    url.save()
+                    return HttpResponseBadRequest()
+                else:
+                    return HttpResponseRedirect(Urls.objects.get(outSlug = accessed_url).inUrl)
             else:
                 return HttpResponseBadRequest()
     else:
