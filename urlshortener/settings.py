@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 
 import os
 from pathlib import Path
+from celery.schedules import crontab
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -25,12 +26,13 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-=$!+_km9d&-*j69-1otmx8%jpqva#pb2)n51v3&mfzys8fxo3c'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['localhost']
 
-
+CSRF_TRUSTED_ORIGINS = ['http://localhost','http://localhost:1337']
 # Application definition
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -49,7 +51,6 @@ INSTALLED_APPS = [
     'crispy_forms',
     'crispy_bootstrap4',
     'django_celery_beat',
-    'django_celery_results',
     'celery'
 ]
 SITE_ID = 1
@@ -111,13 +112,31 @@ AUTHENTICATION_BACKENDS = [#AllAuth
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+    # "default": {
+    #     "ENGINE": os.environ.get("SQL_ENGINE", "django.db.backends.sqlite3"),
+    #     "NAME": os.environ.get("SQL_DATABASE", BASE_DIR / "db.sqlite3"),
+    #     "USER": os.environ.get("SQL_USER", "user"),
+    #     "PASSWORD": os.environ.get("SQL_PASSWORD", "password"),
+    #     "HOST": os.environ.get("SQL_HOST", "localhost"),
+    #     "PORT": os.environ.get("SQL_PORT", "5432"),
+    # }
+ 
+   "default": {        
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": "hello_django_prod",
+        "USER": "hello_django",
+        "PASSWORD": "hello_django",
+        "HOST": "db",
+        "PORT": 5432,
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
@@ -173,47 +192,26 @@ CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap4"
 
 CRISPY_TEMPLATE_PACK = "bootstrap4"
 
+# ACCOUNT_FORMS= {'signup': 'shortenerapp.forms.MySignupForm'}
+
 ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
 
 ACCOUNT_CONFIRM_EMAIL_ON_GET = True
 
 ACCOUNT_EMAIL_CONFIRMATION_ANONYMOUS_REDIRECT_URL = LOGIN_URL
 
-# CELERY_BROKER_URL = os.environ.get("CELERY_BROKER",'redis://localhost:6379/0')
+CELERY_BROKER_URL = os.environ.get("CELERY_BROKER",'redis://localhost:6379/0')
 
-# CELERY_RESULT_BACKEND = os.environ.get("CELERY_BROKER",'redis://localhost:6379/0')
-
-
-CELERY_BROKER_URL = os.environ.get("CELERY_BROKER",'redis://127.0.0.1:6379/0')
-
-CELERY_RESULT_BACKEND = os.environ.get("CELERY_BROKER",'redis://127.0.0.1:6379/0')
-
-CELERY_ACCEPT_CONTENT = ['application/json']  
-
-CELERY_TASK_SERIALIZER = 'json'  
-
-CELERY_RESULT_SERIALIZER = 'json'
+CELERY_RESULT_BACKEND = os.environ.get("CELERY_BROKER",'redis://localhost:6379/0')
 
 CELERY_TIMEZONE = 'UTC'
 
-CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'
-
-# CELERY_BEAT_SCHEDULE = { # scheduler configuration 
-#      'countdown_schedule' : {  # whatever the name you want 
-#          'task': 'urlshortener.tasks.countdown', # name of task with path
-#          'schedule': crontab(minute=1,hour=0), # crontab() runs the tasks every minute
-#      },
-# }
-
-CACHES = {
-    "default": {
-        "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": f"redis://127.0.0.1:6379/1",
-        "OPTIONS": {
-            "CLIENT_CLASS": "django_redis.client.DefaultClient",
-        },
+CELERY_BEAT_SCHEDULE = { # scheduler configuration 
+    'countdown_schedule' : {  # whatever the name you want 
+        'task': 'urlshortener.tasks.countdown', # name of task with path
+        'schedule': crontab(), # crontab() runs the tasks every minute
     }
-}
+    }
 
 ACCOUNT_EMAIL_REQUIRED = True 
 ACCOUNT_UNIQUE_EMAIL = True
